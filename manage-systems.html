@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إدارة الأنظمة</title>
+
+<style>
+
+body{
+background:#2b2b2b;
+color:white;
+direction:rtl;
+font-family:Arial;
+padding:20px;
+margin:0;
+text-align:center;
+}
+
+h2{
+color:red;
+margin-bottom:20px;
+}
+
+.system{
+background:#3a3a3a;
+padding:15px;
+margin:10px auto;
+border-radius:10px;
+border:1px solid red;
+width:250px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+button{
+background:red;
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+
+<script>
+
+let systems=[];
+
+window.onload=function(){
+
+systems =
+JSON.parse(localStorage.getItem("systems")) || [];
+
+displaySystems();
+
+};
+
+function displaySystems(){
+
+let container =
+document.getElementById("systemsContainer");
+
+container.innerHTML="";
+
+if(systems.length===0){
+container.innerHTML="<p>لا توجد أنظمة</p>";
+return;
+}
+
+systems.forEach((sys,index)=>{
+
+let div=document.createElement("div");
+div.className="system";
+
+div.innerHTML=`
+<span>${sys}</span>
+<button onclick="deleteSystem(${index})">
+🗑️ حذف
+</button>
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+function deleteSystem(index){
+
+if(confirm("هل تريد حذف النظام؟")){
+
+systems.splice(index,1);
+
+localStorage.setItem(
+"systems",
+JSON.stringify(systems)
+);
+
+displaySystems();
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h2>🗑️ إدارة الأنظمة</h2>
+
+<div id="systemsContainer"></div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إضافة نظام</title>
+
+<script>
+
+function addSystem(){
+
+let name=
+document.getElementById("systemName").value;
+
+if(name===""){
+
+alert("اكتب اسم النظام");
+
+return;
+
+}
+
+let systems=
+JSON.parse(localStorage.getItem("systems")) || [];
+
+systems.push(name);
+
+localStorage.setItem(
+"systems",
+JSON.stringify(systems)
+);
+
+alert("✅ تم إضافة النظام");
+
+}
+
+</script>
+
+</head>
+
+<body style="background:#2b2b2b;color:white;text-align:center;padding-top:80px;direction:rtl;">
+
+<h2>إضافة نظام</h2>
+
+<input
+id="systemName"
+placeholder="اسم النظام">
+
+<br><br>
+
+<button onclick="addSystem()">
+إضافة النظام
+</button>
+
+</body>
+</html>

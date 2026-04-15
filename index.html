@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AZOOZ Store</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+direction:rtl;
+background:#2b2b2b;
+color:white;
+}
+
+/* زر الإعدادات */
+.settings-btn{
+position:fixed;
+top:15px;
+left:15px;
+width:45px;
+height:45px;
+background:red;
+color:white;
+border:none;
+border-radius:8px;
+font-size:22px;
+cursor:pointer;
+z-index:999;
+}
+
+/* زر القائمة */
+.menu-btn{
+position:fixed;
+top:15px;
+right:15px;
+width:45px;
+height:45px;
+background:#444;
+color:white;
+border:none;
+border-radius:8px;
+font-size:22px;
+cursor:pointer;
+z-index:999;
+}
+
+/* القائمة */
+.user-menu{
+position:fixed;
+top:65px;
+right:15px;
+background:#3a3a3a;
+border:1px solid red;
+border-radius:8px;
+display:none;
+flex-direction:column;
+width:150px;
+z-index:999;
+}
+
+.user-menu button{
+background:none;
+border:none;
+color:white;
+padding:10px;
+text-align:right;
+cursor:pointer;
+}
+
+.user-menu button:hover{
+background:#555;
+}
+
+/* العنوان */
+.navbar{
+background:#1f1f1f;
+padding:15px;
+text-align:center;
+border-bottom:3px solid red;
+}
+
+.navbar h2{
+color:red;
+margin:5px;
+}
+
+/* البحث */
+.search-bar{
+background:#1f1f1f;
+padding:15px;
+text-align:center;
+border-bottom:2px solid red;
+}
+
+.search-bar input{
+padding:10px;
+width:200px;
+border-radius:6px;
+border:none;
+margin-left:10px;
+}
+
+.search-bar select{
+padding:10px;
+border-radius:6px;
+}
+
+/* المنتجات */
+.products{
+padding:20px;
+display:grid;
+grid-template-columns: repeat(8,1fr);
+gap:10px;
+}
+
+.product{
+background:#3a3a3a;
+padding:8px;
+border-radius:8px;
+border:1px solid red;
+text-align:center;
+font-size:12px;
+}
+
+.product img{
+width:100%;
+height:90px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.product button{
+background:red;
+color:white;
+border:none;
+padding:6px;
+border-radius:6px;
+cursor:pointer;
+font-size:12px;
+margin-top:5px;
+}
+
+/* الجوال */
+@media (max-width:768px){
+.products{
+grid-template-columns: repeat(2,1fr);
+gap:15px;
+}
+.product img{
+height:140px;
+}
+}
+
+.footer{
+background:#1f1f1f;
+padding:15px;
+text-align:center;
+border-top:3px solid red;
+}
+
+</style>
+
+<script>
+
+let allProducts=[];
+
+window.onload=function(){
+
+let systems =
+JSON.parse(localStorage.getItem("systems")) || [];
+
+let select =
+document.getElementById("systemList");
+
+systems.forEach(system=>{
+let option=document.createElement("option");
+option.text=system;
+option.value=system;
+select.add(option);
+});
+
+allProducts =
+JSON.parse(localStorage.getItem("products")) || [];
+
+displayProducts(allProducts);
+
+}
+
+/* عرض المنتجات */
+function displayProducts(products){
+
+let container =
+document.getElementById("productsContainer");
+
+container.innerHTML="";
+
+products.forEach(product=>{
+
+let price = product.price ? product.price : "0";
+
+let div=document.createElement("div");
+div.className="product";
+
+div.innerHTML=`
+
+<img src="${product.image}">
+<h3>${product.name}</h3>
+<p>${product.system}</p>
+
+<!-- 🔥 السعر -->
+<p>💰 ${price} ريال</p>
+
+<button onclick="addToCart(
+'${product.name}',
+'${product.system}',
+'${product.image}',
+'${price}'
+)">
+➕ إضافة
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+/* إضافة للسلة */
+function addToCart(name,system,image,price){
+
+let cart=
+JSON.parse(localStorage.getItem("cart")) || [];
+
+let exists=
+cart.find(p=>p.name===name);
+
+if(exists){
+alert("اللعبة مضافة مسبقًا");
+return;
+}
+
+cart.push({
+name:name,
+system:system,
+image:image,
+price:price
+});
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+alert("تمت إضافة اللعبة");
+
+}
+
+/* البحث */
+function smartSearch(){
+
+let text=
+document.getElementById("searchInput").value.toLowerCase();
+
+let system=
+document.getElementById("systemList").value;
+
+let filtered=
+allProducts.filter(product=>{
+
+let nameMatch=
+product.name.toLowerCase().startsWith(text);
+
+let systemMatch=
+(system==="all")||(product.system===system);
+
+return nameMatch && systemMatch;
+
+});
+
+displayProducts(filtered);
+
+}
+
+/* القائمة */
+function toggleMenu(){
+
+let menu=document.getElementById("userMenu");
+
+menu.style.display=
+(menu.style.display==="flex")?"none":"flex";
+
+}
+
+function openMyCart(){
+window.location.href="my-cart.html";
+}
+
+</script>
+
+</head>
+
+<body>
+
+<button class="settings-btn" onclick="window.location.href='login.html'">⚙️</button>
+
+<button class="menu-btn" onclick="toggleMenu()">⋮</button>
+
+<div id="userMenu" class="user-menu">
+<button onclick="openMyCart()">📦 طلباتي</button>
+</div>
+
+<div class="navbar">
+<h2>AZOOZ</h2>
+</div>
+
+<div class="search-bar">
+
+<input type="text" id="searchInput" placeholder="ابحث..." oninput="smartSearch()">
+
+<select id="systemList" onchange="smartSearch()">
+<option value="all">الكل</option>
+</select>
+
+</div>
+
+<div class="products" id="productsContainer"></div>
+
+<div class="footer">
+© 2026 AZOOZ
+</div>
+
+</body>
+</html>

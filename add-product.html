@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إضافة منتج</title>
+
+<style>
+
+body{
+background:#2b2b2b;
+color:white;
+text-align:center;
+padding-top:40px;
+direction:rtl;
+font-family:Arial;
+margin:0;
+}
+
+.container{
+background:#3a3a3a;
+width:320px;
+margin:auto;
+padding:20px;
+border-radius:10px;
+border:1px solid red;
+}
+
+/* المدخلات */
+
+input,select{
+
+width:90%;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+border:none;
+
+}
+
+/* زر */
+
+button{
+
+background:red;
+color:white;
+border:none;
+padding:12px;
+border-radius:6px;
+cursor:pointer;
+width:95%;
+font-size:15px;
+
+}
+
+button:hover{
+background:#ff0000;
+}
+
+/* الصورة */
+
+img{
+
+width:140px;
+margin-top:10px;
+border-radius:8px;
+display:none;
+
+}
+
+</style>
+
+<script>
+
+let systems=[];
+
+window.onload=function(){
+
+/* تحميل الأنظمة */
+
+systems=
+JSON.parse(localStorage.getItem("systems")) || [];
+
+let select=
+document.getElementById("system");
+
+/* إضافة خيار الكل */
+
+systems.forEach(sys=>{
+
+let option=document.createElement("option");
+
+option.text=sys;
+option.value=sys;
+
+select.add(option);
+
+});
+
+}
+
+/* عرض الصورة */
+
+function previewImage(){
+
+let input=
+document.getElementById("image");
+
+if(input.files && input.files[0]){
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+let img=
+document.getElementById("preview");
+
+img.src=e.target.result;
+
+img.style.display="block";
+
+};
+
+reader.readAsDataURL(input.files[0]);
+
+}
+
+}
+
+/* إضافة المنتج */
+
+function addProduct(){
+
+let name=
+document.getElementById("name").value.trim();
+
+let system=
+document.getElementById("system").value;
+
+let file=
+document.getElementById("image").files[0];
+
+if(name===""){
+
+alert("أدخل اسم المنتج");
+
+return;
+
+}
+
+if(system==="اختر النظام"){
+
+alert("اختر النظام");
+
+return;
+
+}
+
+if(!file){
+
+alert("اختر صورة");
+
+return;
+
+}
+
+let reader=new FileReader();
+
+reader.onload=function(){
+
+let products=
+JSON.parse(localStorage.getItem("products")) || [];
+
+/* إضافة المنتج */
+
+products.push({
+
+name:name,
+system:system,
+image:reader.result
+
+});
+
+/* حفظ */
+
+localStorage.setItem(
+"products",
+JSON.stringify(products)
+);
+
+alert("✅ تم إضافة المنتج بنجاح");
+
+/* تنظيف الحقول */
+
+document.getElementById("name").value="";
+document.getElementById("system").selectedIndex=0;
+document.getElementById("image").value="";
+document.getElementById("preview").style.display="none";
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>➕ إضافة منتج جديد</h2>
+
+<input
+type="text"
+id="name"
+placeholder="اسم المنتج">
+
+<select id="system">
+
+<option>
+اختر النظام
+</option>
+
+</select>
+
+<input
+type="file"
+id="image"
+accept="image/*"
+onchange="previewImage()">
+
+<img id="preview">
+
+<button onclick="addProduct()">
+إضافة المنتج
+</button>
+
+</div>
+
+</body>
+</html>

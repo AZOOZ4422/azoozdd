@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>طلباتي</title>
+
+<style>
+
+body{
+background:#2b2b2b;
+color:white;
+font-family:Arial;
+direction:rtl;
+margin:0;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+/* زر واتساب */
+.whatsapp-btn{
+background:green;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+/* زر رجوع */
+.back-btn{
+background:#555;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.products{
+display:grid;
+grid-template-columns: repeat(6,1fr);
+gap:15px;
+}
+
+.product{
+background:#3a3a3a;
+padding:10px;
+border-radius:10px;
+border:1px solid red;
+text-align:center;
+}
+
+.product img{
+width:100%;
+height:120px;
+object-fit:cover;
+border-radius:8px;
+margin-bottom:5px;
+}
+
+.delete-btn{
+background:#900;
+color:white;
+border:none;
+padding:6px;
+border-radius:6px;
+cursor:pointer;
+font-size:12px;
+margin-top:5px;
+}
+
+.total-box{
+margin-top:20px;
+text-align:center;
+font-size:18px;
+color:#00ffcc;
+line-height:1.8;
+}
+
+@media (max-width:768px){
+.products{
+grid-template-columns: repeat(2,1fr);
+}
+}
+
+</style>
+
+<script>
+
+window.onload=function(){
+loadCart();
+};
+
+function loadCart(){
+
+let cart=
+JSON.parse(localStorage.getItem("cart")) || [];
+
+let container=
+document.getElementById("productsContainer");
+
+let totalBox=
+document.getElementById("totalBox");
+
+container.innerHTML="";
+totalBox.innerHTML="";
+
+if(cart.length===0){
+container.innerHTML="<p>لا توجد ألعاب في السلة</p>";
+return;
+}
+
+let subtotal = 0;
+
+cart.forEach((product,index)=>{
+
+let price = Number(product.price) || 0;
+subtotal += price;
+
+let div=document.createElement("div");
+div.className="product";
+
+div.innerHTML=`
+<img src="${product.image}">
+<h3>${product.name}</h3>
+<p>${product.system}</p>
+<p>💰 ${price} ريال</p>
+
+<button class="delete-btn" onclick="deleteGame(${index})">
+🗑️ حذف
+</button>
+`;
+
+container.appendChild(div);
+
+});
+
+/* الضريبة 2% */
+let tax = subtotal * 0.02;
+let total = subtotal + tax;
+
+/* عرض المجموع */
+totalBox.innerHTML = `
+المجموع بدون ضريبة: ${subtotal.toFixed(2)} ريال<br>
+الضريبة (2%): ${tax.toFixed(2)} ريال<br>
+الإجمالي: 💰 ${total.toFixed(2)} ريال
+`;
+
+}
+
+/* حذف منتج */
+function deleteGame(index){
+
+let cart=
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.splice(index,1);
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+loadCart();
+
+}
+
+/* رجوع */
+function goBack(){
+window.location.href="index.html";
+}
+
+/* إرسال واتساب */
+function sendWhatsApp(){
+
+let cart=
+JSON.parse(localStorage.getItem("cart")) || [];
+
+if(cart.length===0){
+alert("لا توجد ألعاب");
+return;
+}
+
+let grouped = {};
+let subtotal = 0;
+
+cart.forEach(p=>{
+
+let price = Number(p.price) || 0;
+subtotal += price;
+
+if(!grouped[p.system]){
+grouped[p.system] = [];
+}
+
+grouped[p.system].push(p.name);
+
+});
+
+let tax = subtotal * 0.02;
+let total = subtotal + tax;
+
+/* الرسالة */
+let message =
+"مرحبا متجر AZOOZ\n"+
+"أرغب بتحميل الألعاب من متجركم \n\n";
+
+for(let system in grouped){
+
+message += "نظام: " + system + "\n";
+
+grouped[system].forEach(game=>{
+message += game + "\n";
+});
+
+message += "\n";
+}
+
+message +=
+"المجموع بدون ضريبة: "+subtotal.toFixed(2)+" ريال\n"+
+"الضريبة (2%): "+tax.toFixed(2)+" ريال\n"+
+"الإجمالي: "+total.toFixed(2)+" ريال";
+
+let phone="966533440847";
+
+let url =
+"https://wa.me/"+phone+
+"?text="+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button class="back-btn" onclick="goBack()">⬅️ رجوع</button>
+
+<button class="whatsapp-btn" onclick="sendWhatsApp()">
+💬 واتساب
+</button>
+
+</div>
+
+<div class="products" id="productsContainer"></div>
+
+<div id="totalBox" class="total-box"></div>
+
+</body>
+
+</html>

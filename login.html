@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تسجيل الدخول</title>
+
+<script>
+
+function login(){
+
+let email=
+document.getElementById("email").value;
+
+let password=
+document.getElementById("password").value;
+
+if(
+email==="adxcgh351@gmail.com"
+&&
+password==="NM123456nm"
+){
+
+window.location.href="admin.html";
+
+}
+
+else{
+
+alert("❌ البيانات غير صحيحة");
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body style="background:#2b2b2b;color:white;text-align:center;padding-top:100px;direction:rtl;">
+
+<h2>تسجيل الدخول</h2>
+
+<input id="email"
+placeholder="البريد الإلكتروني">
+
+<br><br>
+
+<input id="password"
+type="password"
+placeholder="كلمة المرور">
+
+<br><br>
+
+<button onclick="login()">
+دخول
+</button>
+
+</body>
+</html>

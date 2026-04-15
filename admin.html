@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+
+<meta charset="UTF-8">
+<title>لوحة التحكم</title>
+
+<style>
+
+body{
+background:#2b2b2b;
+color:white;
+font-family:Arial;
+direction:rtl;
+text-align:center;
+padding-top:80px;
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:15px;
+width:250px;
+margin:auto;
+}
+
+button{
+background:red;
+color:white;
+border:none;
+padding:15px;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#ff0000;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>⚙️ لوحة التحكم</h2>
+
+<div class="menu">
+
+<button onclick="openAddProduct()">
+➕ إضافة منتجات
+</button>
+
+<button onclick="openEditProducts()">
+✏️ تعديل المنتجات
+</button>
+
+<button onclick="openAddSystem()">
+🧩 إضافة نظام جديد
+</button>
+
+<button onclick="openManageSystems()">
+🗑️ الأنظمة القديمة
+</button>
+
+</div>
+
+<script>
+
+function openAddProduct(){
+window.location.href="add-product.html";
+}
+
+function openEditProducts(){
+window.location.href="edit-products.html";
+}
+
+function openAddSystem(){
+window.location.href="add-system.html";
+}
+
+/* 🔥 الجديد */
+function openManageSystems(){
+window.location.href="manage-systems.html";
+}
+
+</script>
+
+</body>
+</html>
